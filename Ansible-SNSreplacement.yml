@@ -1,0 +1,29 @@
+---
+- name: Create of SNS Topic using Ansible
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: Create alarm SNS topic
+      sns_topic:
+        name: "alarms"
+        state: present
+        display_name: "alarm SNS topic"
+        delivery_policy:
+          http:
+            defaultHealthyRetryPolicy:
+                minDelayTarget: 2
+                maxDelayTarget: 4
+                numRetries: 9
+                numMaxDelayRetries: 5
+                numMinDelayRetries: 2
+                numNoDelayRetries: 2
+                backoffFunction: "linear"
+            disableSubscriptionOverrides: True
+            defaultThrottlePolicy:
+                maxReceivesPerSecond: 10
+        subscriptions:
+          - endpoint: "endpoint1"
+            protocol: "protocol1"
+          - endpoint: "endpoint2"
+            protocol: "protocol2"
